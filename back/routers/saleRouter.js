@@ -314,7 +314,7 @@ router.post("/inAgencySales", isAdminCheck, async (req, res, next) => {
        AND	A.UserId IN	(
                         SELECT	id
                           FROM	users
-                         WHERE	AgencyId = 2
+                         WHERE	AgencyId = 5
                         )
        AND	DATE_FORMAT(A.createdAt, "%Y%m") >= "${startDate}"
        AND	DATE_FORMAT(A.createdAt, "%Y%m") <= "${endDate}"
@@ -373,7 +373,7 @@ router.post("/persnal/cal", isAdminCheck, async (req, res, next) => {
     JOIN	userGrade C
       ON	A.gradeString = C.lvValue
    WHERE	1=1
-     AND  B.AgencyId = 2
+     AND  B.AgencyId = 5
      AND	DATE_FORMAT(A.createdAt, "%Y%m") >= "${startDate}"
      AND	DATE_FORMAT(A.createdAt, "%Y%m") <= "${endDate}"
      AND	B.username LIKE "%${searchName}%"

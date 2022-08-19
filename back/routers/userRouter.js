@@ -89,7 +89,7 @@ router.post("/list", async (req, res, next) => {
       JOIN	userGrade 	C
         ON	A.UserGradeId = C.id
      WHERE	A.isExit = 0
-       AND  A.AgencyId = 2
+       AND  A.AgencyId = 5
        AND	A.username LIKE '%${_username}%'
        AND	A.email LIKE '%${_email}%'
             ${_notAny ? ` AND  C.lvValue != "any"` : ``}
@@ -173,7 +173,7 @@ SELECT	*
         JOIN	userGrade 	C
           ON	A.UserGradeId = C.id
        WHERE	A.isExit = 0
-         AND  A.AgencyId = 2
+         AND  A.AgencyId = 5
          AND	A.username LIKE '%${_username}%'
          AND	A.email LIKE '%${_email}%'
          ${_gradeId ? `AND  A.UserGradeId = ${_gradeId} ` : ""}
@@ -249,7 +249,7 @@ router.post("/list/innerList", isAdminCheck, async (req, res, next) => {
         ON	A.UserGradeId = C.id
      WHERE	A.isExit = 0
        AND	A.managerId = ${parentId}
-       AND A.AgencyId = 2
+       AND A.AgencyId = 5
      ORDER BY  A.createdAt ${_dateSort === 1 ? "ASC" : "DESC"}
     `;
 
@@ -263,7 +263,7 @@ router.post("/list/innerList", isAdminCheck, async (req, res, next) => {
                 JOIN	agencys B
                   ON	A.AgencyId = B.id
                WHERE  A.managerId = ${parentId}
-                 AND A.AgencyId = 2
+                 AND A.AgencyId = 5
             )	Z
       GROUP BY Z.name
     `;
@@ -1167,7 +1167,7 @@ router.post("/agency/chart", isAdminCheck, async (req, res, next) => {
              INNER
               JOIN	agencys B
                 ON	A.AgencyId = B.id
-             WHERE  A.AgencyId = 2
+             WHERE  A.AgencyId = 5
           )	Z
     GROUP BY Z.name
   `;
@@ -1182,7 +1182,7 @@ router.post("/agency/chart", isAdminCheck, async (req, res, next) => {
              INNER
               JOIN	userGrade	C
                 ON	A.UserGradeId = C.id
-             WHERE  A.AgencyId = 2
+             WHERE  A.AgencyId = 5
                
             )	Z
       GROUP BY Z.lvValue
@@ -1195,7 +1195,7 @@ router.post("/agency/chart", isAdminCheck, async (req, res, next) => {
         SELECT 	COUNT(managerId)
           FROM	users	B
          WHERE  A.id = B.managerId 
-           AND  A.AgencyId = 2
+           AND  A.AgencyId = 5
          GROUP	BY managerId	
       ), 0
    )
@@ -1206,12 +1206,12 @@ router.post("/agency/chart", isAdminCheck, async (req, res, next) => {
               SELECT 	COUNT(managerId)
                 FROM	users	B
               WHERE  A.id = B.managerId 
-                AND  A.AgencyId = 2
+                AND  A.AgencyId = 5
               GROUP	BY managerId	
             ), 0
          )		AS cnt
     FROM users		A
-   WHERE  A.AgencyId = 2
+   WHERE  A.AgencyId = 5
    LIMIT 10
   `;
 
