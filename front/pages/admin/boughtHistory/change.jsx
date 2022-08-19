@@ -71,7 +71,7 @@ const Cancel = ({}) => {
         data: {
           cancelType: 2,
           listType: currentTab,
-          agencyId: 2,
+          agencyId: 5,
         },
       });
     }
@@ -133,7 +133,7 @@ const Cancel = ({}) => {
         data: {
           listType: data,
           cancelType: 2,
-          agencyId: 2,
+          agencyId: 5,
         },
       });
     },
@@ -459,7 +459,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       data: {
         cancelType: 2,
         listType: 1,
-        agencyId: 2,
+        agencyId: 5,
       },
     });
 

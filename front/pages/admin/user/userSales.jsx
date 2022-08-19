@@ -670,7 +670,7 @@ const UserList = ({}) => {
           al="flex-start"
         >
           <GuideDiv isImpo={true}>
-            직급, 사용자명, 대리점명으로 검색할 수 있습니다.
+            직급, 사용자명, 이메일로 검색할 수 있습니다.
           </GuideDiv>
           <GuideDiv isImpo={true}>
             등급업은 신중한 작업을 필요로 합니다.
