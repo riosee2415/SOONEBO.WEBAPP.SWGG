@@ -373,7 +373,7 @@ const Home = ({}) => {
             >
               <Fade bottom>
                 <Text>문의하기</Text>
-                <Text margin={`15px 0 25px`}>rcp2019@naver.com</Text>
+                <Text margin={`15px 0 25px`}>dreaming.33@hanmail.net</Text>
                 <Wrapper dr={`row`}>
                   <Link href={`/csCenter/faq`}>
                     <a>

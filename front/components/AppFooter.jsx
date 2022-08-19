@@ -60,11 +60,13 @@ const AppFooter = () => {
         </Wrapper>
         <>
           <Wrapper width={`auto`} dr={`row`}>
-            <Text>에이젯 솔루션</Text>
+            <Text>꿈자람교육</Text>
             <Text margin={`0 10px`} fontSize={width < 800 && `12px`}>
-              주소 : 경상남도 창원시 성산구 중앙대로 95, 706-1호
+              주소 : 경기도 수원시 영통구 도청로17번길 40 광교에듀타운 1층-R카페
             </Text>
-            <Text fontSize={width < 800 && `12px`}>대표 : 황원배</Text>
+            <Text fontSize={width < 800 && `12px`}>
+              대표 : 박지영 park jo yeong
+            </Text>
           </Wrapper>
           <Wrapper
             width={`auto`}
@@ -73,7 +75,7 @@ const AppFooter = () => {
             margin={`10px 0`}
           >
             <Text fontSize={width < 800 && `12px`}>
-              사업자등록번호 : 7783101241
+              사업자등록번호 : 501-92-62805
             </Text>
 
             <Text margin={`0 15px`}>|</Text>
@@ -84,13 +86,13 @@ const AppFooter = () => {
           </Wrapper>
 
           <Wrapper width={`auto`} dr={`row`} margin={`0 0 10px`}>
-            <Text fontSize={width < 800 && `12px`}>FAX : 055-275-5386</Text>
+            {/* <Text fontSize={width < 800 && `12px`}>FAX : 055-275-5386</Text>
 
-            <Text margin={`0 15px`}>|</Text>
+            <Text margin={`0 15px`}>|</Text> */}
 
             <Text fontSize={width < 800 && `12px`}>
-              <a href={`mailto:kisk1010@hanmail.net`}>
-                E-mail : kisk1010@hanmail.net
+              <a href={`mailto:dreaming.33@hanmail.net`}>
+                E-mail : dreaming.33@hanmail.net
               </a>
             </Text>
           </Wrapper>
