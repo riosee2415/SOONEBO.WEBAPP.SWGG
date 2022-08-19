@@ -234,7 +234,7 @@ const Index = () => {
   // 바로 구매 장바구니 담기
   useEffect(() => {
     if (st_wishItemnBuyAddDone) {
-      sessionStorage.setItem("buy-az", JSON.stringify(buyItems));
+      sessionStorage.setItem("buy-swgg", JSON.stringify(buyItems));
 
       return router.push("/order");
     }
