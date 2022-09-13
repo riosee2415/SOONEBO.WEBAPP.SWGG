@@ -182,7 +182,6 @@ const Index = () => {
     lastPageYou,
   } = useSelector((state) => state.sale);
 
-  console.log(mypageMyPrice[0].sumSale);
   ////// HOOKS //////
   // 장바구니
   const router = useRouter();
@@ -746,7 +745,9 @@ const Index = () => {
                             >
                               {router.query.type === `mySales`
                                 ? `${
-                                    mypageAllPrice && mypageAllPrice[0]
+                                    mypageAllPrice &&
+                                    mypageAllPrice[0] &&
+                                    mypageAllPrice[0].sumSale
                                       ? parseInt(
                                           mypageAllPrice[0].sumSale
                                         ).toLocaleString("ko-KR")
@@ -800,7 +801,9 @@ const Index = () => {
                             >
                               {router.query.type === `mySales`
                                 ? `${
-                                    mypageMyPrice && mypageMyPrice[0]
+                                    mypageMyPrice &&
+                                    mypageMyPrice[0] &&
+                                    mypageMyPrice[0].sumSale
                                       ? parseInt(
                                           mypageMyPrice[0].sumSale
                                         ).toLocaleString("ko-KR")
@@ -852,9 +855,7 @@ const Index = () => {
                             >
                               {router.query.type === `mySales`
                                 ? `${
-                                    mypageYouPrice &&
-                                    mypageYouPrice[0] &&
-                                    mypageYouPrice[0].sumSale
+                                    mypageYouPrice && mypageYouPrice[0]
                                       ? parseInt(
                                           mypageYouPrice[0].sumSale
                                         ).toLocaleString("ko-KR")
