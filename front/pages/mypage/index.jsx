@@ -855,7 +855,9 @@ const Index = () => {
                             >
                               {router.query.type === `mySales`
                                 ? `${
-                                    mypageYouPrice && mypageYouPrice[0]
+                                    mypageYouPrice &&
+                                    mypageYouPrice[0] &&
+                                    mypageYouPrice[0].sumSale
                                       ? parseInt(
                                           mypageYouPrice[0].sumSale
                                         ).toLocaleString("ko-KR")
