@@ -192,7 +192,7 @@ const UserList = ({}) => {
       type: USERLIST_REQUEST,
       data: {
         gradeId: listUserGrade,
-        agencyId: listUserAgency,
+        agencyId: 5,
         username: listUsername,
         email: listUserEmail,
         dateSort: listSort,
@@ -237,7 +237,7 @@ const UserList = ({}) => {
         type: USERLIST_REQUEST,
         data: {
           gradeId: listUserGrade,
-          agencyId: listUserAgency,
+          agencyId: 5,
           username: listUsername,
           email: listUserEmail,
           dateSort: listSort,

@@ -136,7 +136,7 @@ const GetList = ({}) => {
         data: {
           startDate: sStartDate || currentDate,
           endDate: sEndDate || currentDate,
-          searchValue: "AZ대리점",
+          searchValue: "SWGG",
         },
       });
 
@@ -163,7 +163,7 @@ const GetList = ({}) => {
         data: {
           startDate: sendDate[0],
           endDate: sendDate[1],
-          searchValue: "AZ대리점",
+          searchValue: "SWGG",
         },
       });
     },
@@ -397,7 +397,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       data: {
         startDate: currentDate,
         endDate: currentDate,
-        searchValue: "AZ대리점",
+        searchValue: "SWGG",
       },
     });
 
