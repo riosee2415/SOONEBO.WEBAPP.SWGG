@@ -197,9 +197,16 @@ SELECT	*
 });
 
 router.post("/list/innerList", isAdminCheck, async (req, res, next) => {
-  const { parentId, dateSort } = req.body;
+  const { parentId, dateSort, page } = req.body;
 
   const _dateSort = dateSort ? parseInt(dateSort) : 1;
+
+  const LIMIT = 10;
+
+  const _page = page ? page : 1;
+
+  const __page = _page - 1;
+  const OFFSET = __page * 10;
 
   try {
     let selectQ = `
@@ -233,7 +240,8 @@ router.post("/list/innerList", isAdminCheck, async (req, res, next) => {
             B.name,
             B.urlName,
             A.UserGradeId,
-            C.lvValue 
+            C.lvValue,
+            ROW_NUMBER() OVER(ORDER BY A.createdAt)				                  AS	num
       FROM	users		A
       LEFT
      OUTER
@@ -249,8 +257,62 @@ router.post("/list/innerList", isAdminCheck, async (req, res, next) => {
         ON	A.UserGradeId = C.id
      WHERE	A.isExit = 0
        AND	A.managerId = ${parentId}
-       AND A.AgencyId = 5
+       AND  A.AgencyId = 5
      ORDER BY  A.createdAt ${_dateSort === 1 ? "ASC" : "DESC"}
+    `;
+
+    let selectM = `
+    SELECT	A.id,
+            A.userId,
+            A.email,
+            A.username,
+            A.mobile,
+            A.level,
+            CASE
+              WHEN	A.level = 1	THEN	"일반회원"
+              WHEN	A.level = 2	THEN	"설정없음"
+              WHEN	A.level = 3	THEN	"운영자"
+              WHEN	A.level = 4	THEN	"최고관리자"
+              WHEN	A.level = 5	THEN	"개발사"
+              ELSE 	""
+            END	AS	viewLevel,
+            A.postCode,
+            A.address ,
+            A.detailAddress,
+            A.managerId,
+            A2.username			AS mgrName, 
+            A.userPoint,
+            A.isAgency,
+            A.terms,
+            A.createdAt ,
+            A.updatedAt ,
+            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+            DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일") 		AS viewUpdatedAt,
+            A.AgencyId,
+            B.name,
+            B.urlName,
+            A.UserGradeId,
+            C.lvValue,
+            ROW_NUMBER() OVER(ORDER BY A.createdAt)				                  AS	num
+      FROM	users		A
+      LEFT
+     OUTER
+      JOIN	users		A2
+        ON	A.managerId = A2.id
+      LEFT
+     OUTER
+      JOIN	agencys 	B
+        ON	A.AgencyId  = B.id
+      LEFT
+     OUTER	
+      JOIN	userGrade 	C
+        ON	A.UserGradeId = C.id
+     WHERE	A.isExit = 0
+       AND	A.managerId = ${parentId}
+       AND  A.AgencyId = 5
+     ORDER BY  A.createdAt  DESC
+     LIMIT ${LIMIT}
+    OFFSET ${OFFSET}
     `;
 
     const agencyPeopleQuery = `     
@@ -263,7 +325,7 @@ router.post("/list/innerList", isAdminCheck, async (req, res, next) => {
                 JOIN	agencys B
                   ON	A.AgencyId = B.id
                WHERE  A.managerId = ${parentId}
-                 AND A.AgencyId = 5
+                 AND  A.AgencyId = 5
             )	Z
       GROUP BY Z.name
     `;
@@ -272,9 +334,17 @@ router.post("/list/innerList", isAdminCheck, async (req, res, next) => {
       SELECT  COUNT(*)  AS allUserCnt
         FROM  users
        WHERE  managerId = ${parentId}      
+         AND  AgencyId = 5
     `;
 
     const users = await models.sequelize.query(selectQ);
+    const lengthResult = users[0].length;
+    const lastPage =
+      lengthResult % LIMIT > 0
+        ? lengthResult / LIMIT + 1
+        : lengthResult / LIMIT;
+
+    const mypageUsers = await models.sequelize.query(selectM);
     const agencyPeople = await models.sequelize.query(agencyPeopleQuery);
     const allUser = await models.sequelize.query(allUserList);
 
@@ -282,6 +352,8 @@ router.post("/list/innerList", isAdminCheck, async (req, res, next) => {
       users: users[0],
       agencyPeople: agencyPeople[0],
       allUser: allUser[0][0],
+      mypageUser: mypageUsers[0],
+      lastPage: parseInt(lastPage),
     });
   } catch (error) {
     console.error(error);

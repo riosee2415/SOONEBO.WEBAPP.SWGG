@@ -1,4 +1,5 @@
 const express = require("express");
+const isLoggedIn = require("../middlewares/isLoggedIn");
 const isAdminCheck = require("../middlewares/isAdminCheck");
 const models = require("../models");
 
@@ -412,6 +413,303 @@ router.post("/persnal/cal/completed", isAdminCheck, async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(401).send("정산 내역을 조회할 수 없습니다.");
+  }
+});
+
+router.post("/myPage/list", isLoggedIn, async (req, res, next) => {
+  const { persnalId, page } = req.body;
+
+  const LIMIT = 10;
+
+  const _page = page ? page : 1;
+
+  const __page = _page - 1;
+  const OFFSET = __page * 10;
+
+  const lengthQuery = `
+  SELECT	ROW_NUMBER() OVER()							AS	num,
+          A.id,
+          A.content,
+          A.price,
+          CONCAT(FORMAT(A.price, 0), "원")		AS  viewPrice,
+          A.gradeString,
+          A.createdAt,
+          A.UserId,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+          B.userId,
+          B.username,
+          C.name
+   FROM 	sales		A
+  INNER
+   JOIN	users	B
+    ON	A.UserId = B.id
+   LEFT
+  OUTER
+   JOIN	agencys C
+     ON	B.AgencyId = C.id
+  WHERE	A.content = "매출"
+    AND	A.UserId in (${persnalId})
+`;
+
+  const selectQuery = `
+    SELECT	ROW_NUMBER() OVER(ORDER BY  A.createdAt ASC)	AS	num,
+            A.id,
+            A.content,
+            A.price,
+            CONCAT(FORMAT(A.price, 0), "원")		AS  viewPrice,
+            A.gradeString,
+            A.createdAt,
+            A.UserId,
+            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+            B.userId,
+            B.username,
+            C.name
+     FROM 	sales		A
+    INNER
+     JOIN	users	B
+      ON	A.UserId = B.id
+     LEFT
+    OUTER
+     JOIN	agencys C
+       ON	B.AgencyId = C.id
+    WHERE	A.content = "매출"
+	    AND	A.UserId in (${persnalId})
+    ORDER BY  A.createdAt	DESC
+    LIMIT ${LIMIT}
+   OFFSET ${OFFSET}
+  `;
+
+  const saleQuery = `
+   SELECT	SUM(A.price)  AS  sumSale
+     FROM sales		A
+    INNER
+     JOIN	users	B
+      ON	A.UserId = B.id
+     LEFT
+    OUTER
+     JOIN	agencys C
+       ON	B.AgencyId = C.id
+    WHERE	A.content = "매출"
+	    AND	A.UserId in (${persnalId})
+    ORDER BY  A.createdAt	DESC
+  `;
+
+  try {
+    const length = await models.sequelize.query(lengthQuery);
+    const lengthResult = length[0].length;
+    const lastPage =
+      lengthResult % LIMIT > 0
+        ? lengthResult / LIMIT + 1
+        : lengthResult / LIMIT;
+
+    const result = await models.sequelize.query(selectQuery);
+    const sale = await models.sequelize.query(saleQuery);
+    return res.status(200).json({
+      sale: result[0],
+      allPrice: sale[0],
+      lastPage: parseInt(lastPage),
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(400).send(`데이터를 조회할 수 없습니다.`);
+  }
+});
+
+router.post("/myPage/list/my", async (req, res, next) => {
+  const { persnalId, page } = req.body;
+
+  const LIMIT = 10;
+
+  const _page = page ? page : 1;
+
+  const __page = _page - 1;
+  const OFFSET = __page * 10;
+
+  const lengthQuery = `
+    SELECT	ROW_NUMBER() OVER()							AS	num,
+            A.id,
+            A.content,
+            A.price,
+            CONCAT(FORMAT(A.price, 0), "원")		AS  viewPrice,
+            A.gradeString,
+            A.createdAt,
+            A.UserId,
+            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+            B.userId,
+            B.username,
+            C.name
+     FROM 	sales		A
+    INNER
+     JOIN	users	B
+      ON	A.UserId = B.id
+     LEFT
+    OUTER
+     JOIN	agencys C
+       ON	B.AgencyId = C.id
+    WHERE	A.content = "매출"
+	    AND	A.UserId in (${persnalId})
+  `;
+
+  const selectQuery = `
+    SELECT	ROW_NUMBER() OVER(ORDER BY  A.createdAt ASC)	AS	num,
+            A.id,
+            A.content,
+            A.price,
+            CONCAT(FORMAT(A.price, 0), "원")		AS  viewPrice,
+            A.gradeString,
+            A.createdAt,
+            A.UserId,
+            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+            B.userId,
+            B.username,
+            C.name
+     FROM 	sales		A
+    INNER
+     JOIN	users	B
+      ON	A.UserId = B.id
+     LEFT
+    OUTER
+     JOIN	agencys C
+       ON	B.AgencyId = C.id
+    WHERE	A.content = "매출"
+	    AND	A.UserId in (${persnalId})
+    ORDER BY  A.createdAt	DESC
+    LIMIT ${LIMIT}
+   OFFSET ${OFFSET}
+  `;
+
+  const saleQuery = `
+   SELECT	SUM(A.price)  AS  sumSale
+     FROM sales		A
+    INNER
+     JOIN	users	B
+      ON	A.UserId = B.id
+     LEFT
+    OUTER
+     JOIN	agencys C
+       ON	B.AgencyId = C.id
+    WHERE	A.content = "매출"
+	    AND	A.UserId in (${persnalId})
+    ORDER BY  A.createdAt	DESC
+  `;
+
+  try {
+    const length = await models.sequelize.query(lengthQuery);
+    const lengthResult = length[0].length;
+    const lastPage =
+      lengthResult % LIMIT > 0
+        ? lengthResult / LIMIT + 1
+        : lengthResult / LIMIT;
+
+    const result = await models.sequelize.query(selectQuery);
+    const sale = await models.sequelize.query(saleQuery);
+    return res.status(200).json({
+      sale: result[0],
+      allPrice: sale[0],
+      lastPage: parseInt(lastPage),
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(400).send(`데이터를 조회할 수 없습니다.`);
+  }
+});
+
+router.post("/myPage/list/you", async (req, res, next) => {
+  const { persnalId, page } = req.body;
+
+  const LIMIT = 10;
+
+  const _page = page ? page : 1;
+
+  const __page = _page - 1;
+  const OFFSET = __page * 10;
+
+  const lengthQuery = `
+  SELECT	ROW_NUMBER() OVER()							AS	num,
+          A.id,
+          A.content,
+          A.price,
+          CONCAT(FORMAT(A.price, 0), "원")		AS  viewPrice,
+          A.gradeString,
+          A.createdAt,
+          A.UserId,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+          B.userId,
+          B.username,
+          C.name
+   FROM 	sales		A
+  INNER
+   JOIN	users	B
+    ON	A.UserId = B.id
+   LEFT
+  OUTER
+   JOIN	agencys C
+     ON	B.AgencyId = C.id
+  WHERE	A.content = "매출"
+    AND	A.UserId in (${persnalId})
+`;
+
+  const selectQuery = `
+    SELECT	ROW_NUMBER() OVER(ORDER BY  A.createdAt ASC)	AS	num,
+            A.id,
+            A.content,
+            A.price,
+            CONCAT(FORMAT(A.price, 0), "원")		AS  viewPrice,
+            A.gradeString,
+            A.createdAt,
+            A.UserId,
+            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+            B.userId,
+            B.username,
+            C.name
+     FROM 	sales		A
+    INNER
+     JOIN	users	B
+      ON	A.UserId = B.id
+     LEFT
+    OUTER
+     JOIN	agencys C
+       ON	B.AgencyId = C.id
+    WHERE	A.content = "매출"
+	    AND	A.UserId in (${persnalId})
+    ORDER BY  A.createdAt	DESC
+    LIMIT ${LIMIT}
+   OFFSET ${OFFSET}
+  `;
+
+  const saleQuery = `
+   SELECT	SUM(A.price)  AS  sumSale
+     FROM sales		A
+    INNER
+     JOIN	users	B
+      ON	A.UserId = B.id
+     LEFT
+    OUTER
+     JOIN	agencys C
+       ON	B.AgencyId = C.id
+    WHERE	A.content = "매출"
+	    AND	A.UserId in (${persnalId})
+    ORDER BY  A.createdAt	DESC
+  `;
+
+  try {
+    const length = await models.sequelize.query(lengthQuery);
+    const lengthResult = length[0].length;
+    const lastPage =
+      lengthResult % LIMIT > 0
+        ? lengthResult / LIMIT + 1
+        : lengthResult / LIMIT;
+
+    const result = await models.sequelize.query(selectQuery);
+    const sale = await models.sequelize.query(saleQuery);
+    return res.status(200).json({
+      sale: result[0],
+      allPrice: sale[0],
+      lastPage: parseInt(lastPage),
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(400).send(`데이터를 조회할 수 없습니다.`);
   }
 });
 
