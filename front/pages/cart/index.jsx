@@ -348,7 +348,7 @@ const Index = () => {
   // 선택구매하기
   const choiceProductHandler = useCallback(() => {
     if (currentData.length !== 0) {
-      sessionStorage.setItem("buy-az", JSON.stringify(currentData));
+      sessionStorage.setItem("buy-swgg", JSON.stringify(currentData));
 
       return router.push("/order?type=buy");
     } else {
@@ -360,7 +360,7 @@ const Index = () => {
   const allProductHandler = useCallback(() => {
     if (wishs.length !== 0) {
       sessionStorage.setItem(
-        "buy-az",
+        "buy-swgg",
         JSON.stringify(wishs.map((data) => data.id))
       );
 

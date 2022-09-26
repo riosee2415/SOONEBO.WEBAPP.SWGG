@@ -28,6 +28,18 @@ import {
   PERSONAL_CAL_UPDATE_REQUEST,
   PERSONAL_CAL_UPDATE_SUCCESS,
   PERSONAL_CAL_UPDATE_FAILURE,
+  //
+  PERSONAL_MYPAGE_REQUEST,
+  PERSONAL_MYPAGE_SUCCESS,
+  PERSONAL_MYPAGE_FAILURE,
+  //
+  PERSONAL_MYPAGE_ME_REQUEST,
+  PERSONAL_MYPAGE_ME_SUCCESS,
+  PERSONAL_MYPAGE_ME_FAILURE,
+  //
+  PERSONAL_MYPAGE_YOU_REQUEST,
+  PERSONAL_MYPAGE_YOU_SUCCESS,
+  PERSONAL_MYPAGE_YOU_FAILURE,
 } from "../reducers/sale";
 
 // ******************************************************************************************************************
@@ -218,6 +230,90 @@ function* persnalCalUpdate(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 // ******************************************************************************************************************
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function persnalMypageAPI(data) {
+  return await axios.post("/api/sale/myPage/list", data);
+}
+
+function* persnalMypage(action) {
+  try {
+    const result = yield call(persnalMypageAPI, action.data);
+    yield put({
+      type: PERSONAL_MYPAGE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: PERSONAL_MYPAGE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function persnalMypageMeAPI(data) {
+  return await axios.post("/api/sale/myPage/list/my", data);
+}
+
+function* persnalMypageMe(action) {
+  try {
+    const result = yield call(persnalMypageMeAPI, action.data);
+    yield put({
+      type: PERSONAL_MYPAGE_ME_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: PERSONAL_MYPAGE_ME_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function persnalMypageYouAPI(data) {
+  return await axios.post("/api/sale/myPage/list/you", data);
+}
+
+function* persnalMypageYou(action) {
+  try {
+    const result = yield call(persnalMypageYouAPI, action.data);
+    yield put({
+      type: PERSONAL_MYPAGE_YOU_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: PERSONAL_MYPAGE_YOU_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
 
 //////////////////////////////////////////////////////////////
 
@@ -249,6 +345,18 @@ function* watchPersnalCalUpdate() {
   yield takeLatest(PERSONAL_CAL_UPDATE_REQUEST, persnalCalUpdate);
 }
 
+function* watchPersnalMypage() {
+  yield takeLatest(PERSONAL_MYPAGE_REQUEST, persnalMypage);
+}
+
+function* watchPersnalMypageMe() {
+  yield takeLatest(PERSONAL_MYPAGE_ME_REQUEST, persnalMypageMe);
+}
+
+function* watchPersnalMypageYou() {
+  yield takeLatest(PERSONAL_MYPAGE_YOU_REQUEST, persnalMypageYou);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* saleSaga() {
   yield all([
@@ -259,7 +367,9 @@ export default function* saleSaga() {
     fork(watchPersnalAllUpdate),
     fork(watchPersnalCalList),
     fork(watchPersnalCalUpdate),
-
+    fork(watchPersnalMypage),
+    fork(watchPersnalMypageMe),
+    fork(watchPersnalMypageYou),
     //
   ]);
 }

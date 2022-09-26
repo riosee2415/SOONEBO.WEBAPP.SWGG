@@ -699,7 +699,7 @@ const UserList = ({}) => {
           al="flex-start"
         >
           <GuideDiv isImpo={true}>
-            직급, 사용자명, 대리점명으로 검색할 수 있습니다.
+            직급, 사용자명, 이메일로 검색할 수 있습니다.
           </GuideDiv>
           <GuideDiv isImpo={true}>
             직급변경, 권한수정은 수정 시 사이트 및 어플리케이션에 즉시 적용되기

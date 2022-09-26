@@ -136,12 +136,12 @@ const Index = () => {
       return message.error("로그인 후 이용해주세요.");
     }
 
-    if (!sessionStorage.getItem("buy-az")) {
+    if (!sessionStorage.getItem("buy-swgg")) {
       router.push("/");
 
       return message.error("구매할 항목이 없습니다.");
     } else {
-      setBuyList(JSON.parse(sessionStorage.getItem("buy-az")));
+      setBuyList(JSON.parse(sessionStorage.getItem("buy-swgg")));
     }
   }, [router.query]);
 
@@ -159,7 +159,7 @@ const Index = () => {
   // 주문하기 후처리
   useEffect(() => {
     if (st_boughtCreateDone) {
-      sessionStorage.removeItem("buy-az");
+      sessionStorage.removeItem("buy-swgg");
 
       router.push(`/finish/${boughtResultId}`);
 

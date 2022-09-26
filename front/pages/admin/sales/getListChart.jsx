@@ -303,14 +303,17 @@ const UserDeliAddress = ({}) => {
           al="flex-start"
         >
           <GuideDiv isImpo={true}>
-            기간에 따른 대리점 별 매출관리를 확인할 수 있습니다.
-          </GuideDiv>
-          <GuideDiv isImpo={true}>
             초기 조회값은 현재 월을 기준으로 조회합니다. 매출이 발생되지 않은
             대리점은 목록에 보이지 않습니다.
           </GuideDiv>
           <GuideDiv isImpo={true}>
-            대리점 코드 별 정렬되며, 가독성을 위해 임의의 변경은 불가능합니다.
+            기간에 따른 매출관리를 확인할 수 있습니다.
+          </GuideDiv>
+          <GuideDiv isImpo={true}>
+            초기 조회값은 현재 월을 기준으로 조회합니다.
+          </GuideDiv>
+          <GuideDiv isImpo={true}>
+            가독성을 위해 임의의 변경은 불가능합니다.
           </GuideDiv>
         </Wrapper>
       </AdminContent>

@@ -129,7 +129,7 @@ const UserDeliAddress = ({}) => {
 
         searchDate: parseInt(searchDate),
         payWay: searchPayWay !== "전체" ? searchPayWay : null,
-        agencyId: 2,
+        agencyId: 5,
         deliveryStatus: searcDelivery ? parseInt(searcDelivery) : null,
       },
     });
@@ -158,7 +158,7 @@ const UserDeliAddress = ({}) => {
 
           searchDate: parseInt(searchDate),
           payWay: searchPayWay !== "전체" ? searchPayWay : null,
-          agencyId: 2,
+          agencyId: 5,
           deliveryStatus: searcDelivery ? parseInt(searcDelivery) : null,
         },
       });
@@ -194,7 +194,7 @@ const UserDeliAddress = ({}) => {
 
           searchDate: parseInt(searchDate),
           payWay: searchPayWay !== "전체" ? searchPayWay : null,
-          agencyId: 2,
+          agencyId: 5,
           deliveryStatus: searcDelivery ? parseInt(searcDelivery) : null,
         },
       });
@@ -1063,7 +1063,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
         endDate: null,
         searchDate: 6,
         payWay: null,
-        agencyId: 2,
+        agencyId: 5,
         deliveryStatus: null,
       },
     });

@@ -23,6 +23,8 @@ export const initailState = {
   topUserSelect: null, // select용 하위 회원이 존재하는 회원 목록
 
   underUser: null, // 특정 회원의 하위 회원 목록
+  mypageUser: [], //
+  lastPage: 1,
 
   underUserAll: null, // 특정 회원의 하위회원 수
 
@@ -604,6 +606,8 @@ const reducer = (state = initailState, action) =>
         draft.underUser = action.data.users;
         draft.underUserNumber = action.data.agencyPeople;
         draft.underUserAll = action.data.allUser;
+        draft.mypageUser = action.data.mypageUser;
+        draft.lastPage = action.data.lastPage;
         break;
       }
       case USER_UNDER_FAILURE: {

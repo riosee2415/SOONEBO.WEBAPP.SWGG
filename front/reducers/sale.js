@@ -6,6 +6,15 @@ export const initailState = {
   inAgencySales: [], // 대리점 별 상세매출 리스트
   persnalAllLists: [], // 개인종합매출조회 리스트
   personalCals: [], // 개인 별 정산 리스트
+  mypagePersnal: [], // 마이페이지 매출 리스트
+  mypageMyPersnal: [], // 마이페이지 내 매출 리스트
+  mypageYouPersnal: [], // 마이페이지 피추천인 매출 리스트
+  mypageAllPrice: [], // 마이페이지 총 매출
+  mypageMyPrice: [], // 마이페이지 내 총 매출
+  mypageYouPrice: [], // 마이페이지 피추천인 총 매출
+  lastPageAll: 1,
+  lastPageMe: 1,
+  lastPageYou: 1,
 
   //
   st_persnalListLoading: false, // 개민매출조회리스트
@@ -35,6 +44,18 @@ export const initailState = {
   st_personalCalUpdateLoading: false, // 개인 별 정산 처리
   st_personalCalUpdateDone: false,
   st_personalCalUpdateError: null,
+  //
+  st_personalMypageLoading: false, // 마이페이지 매출 리스트
+  st_personalMypageDone: false,
+  st_personalMypageError: null,
+  //
+  st_personalMypageMeLoading: false, // 마이페이지 내 매출 리스트
+  st_personalMypageMeDone: false,
+  st_personalMypageMeError: null,
+  //
+  st_personalMypageYouLoading: false, // 마이페이지 피추천인 매출 리스트
+  st_personalMypageYouDone: false,
+  st_personalMypageYouError: null,
 };
 
 export const PERSNAL_LIST_REQUEST = "PERSNAL_LIST_REQUEST"; // 개민매출조회리스트
@@ -64,6 +85,18 @@ export const PERSONAL_CAL_LIST_FAILURE = "PERSONAL_CAL_LIST_FAILURE";
 export const PERSONAL_CAL_UPDATE_REQUEST = "PERSONAL_CAL_UPDATE_REQUEST"; // 개인 별 정산 처리
 export const PERSONAL_CAL_UPDATE_SUCCESS = "PERSONAL_CAL_UPDATE_SUCCESS";
 export const PERSONAL_CAL_UPDATE_FAILURE = "PERSONAL_CAL_UPDATE_FAILURE";
+
+export const PERSONAL_MYPAGE_REQUEST = "PERSONAL_MYPAGE_REQUEST";
+export const PERSONAL_MYPAGE_SUCCESS = "PERSONAL_MYPAGE_SUCCESS";
+export const PERSONAL_MYPAGE_FAILURE = "PERSONAL_MYPAGE_FAILURE";
+
+export const PERSONAL_MYPAGE_ME_REQUEST = "PERSONAL_MYPAGE_ME_REQUEST";
+export const PERSONAL_MYPAGE_ME_SUCCESS = "PERSONAL_MYPAGE_ME_SUCCESS";
+export const PERSONAL_MYPAGE_ME_FAILURE = "PERSONAL_MYPAGE_ME_FAILURE";
+
+export const PERSONAL_MYPAGE_YOU_REQUEST = "PERSONAL_MYPAGE_YOU_REQUEST";
+export const PERSONAL_MYPAGE_YOU_SUCCESS = "PERSONAL_MYPAGE_YOU_SUCCESS";
+export const PERSONAL_MYPAGE_YOU_FAILURE = "PERSONAL_MYPAGE_YOU_FAILURE";
 
 const reducer = (state = initailState, action) =>
   produce(state, (draft) => {
@@ -209,6 +242,77 @@ const reducer = (state = initailState, action) =>
         draft.st_personalCalUpdateLoading = false;
         draft.st_personalCalUpdateDone = false;
         draft.st_personalCalUpdateError = action.error;
+        break;
+
+      ///////////////////////////////////////////////////////
+
+      case PERSONAL_MYPAGE_REQUEST:
+        draft.st_personalMypageLoading = true;
+        draft.st_personalMypageDone = false;
+        draft.st_personalMypageError = null;
+        break;
+
+      case PERSONAL_MYPAGE_SUCCESS:
+        draft.st_personalMypageLoading = false;
+        draft.st_personalMypageDone = true;
+        draft.st_personalMypageError = null;
+        draft.mypagePersnal = action.data.sale;
+        draft.mypageAllPrice = action.data.allPrice;
+        draft.lastPageAll = action.data.lastPage;
+        break;
+
+      case PERSONAL_MYPAGE_FAILURE:
+        draft.st_personalMypageLoading = false;
+        draft.st_personalMypageDone = false;
+        draft.st_personalMypageError = action.error;
+        break;
+
+      ///////////////////////////////////////////////////////
+
+      case PERSONAL_MYPAGE_ME_REQUEST:
+        draft.st_personalMypageMeLoading = true;
+        draft.st_personalMypageMeDone = false;
+        draft.st_personalMypageMeError = null;
+        break;
+
+      case PERSONAL_MYPAGE_ME_SUCCESS:
+        draft.st_personalMypageMeLoading = false;
+        draft.st_personalMypageMeDone = true;
+        draft.st_personalMypageMeError = null;
+        draft.mypageMyPersnal = action.data.sale;
+        draft.mypageMyPrice = action.data.allPrice;
+        draft.lastPageMe = action.data.lastPage;
+
+        break;
+
+      case PERSONAL_MYPAGE_ME_FAILURE:
+        draft.st_personalMypageMeLoading = false;
+        draft.st_personalMypageMeDone = false;
+        draft.st_personalMypageMeError = action.error;
+        break;
+
+      ///////////////////////////////////////////////////////
+
+      case PERSONAL_MYPAGE_YOU_REQUEST:
+        draft.st_personalMypageYouLoading = true;
+        draft.st_personalMypageYouDone = false;
+        draft.st_personalMypageYouError = null;
+        break;
+
+      case PERSONAL_MYPAGE_YOU_SUCCESS:
+        draft.st_personalMypageYouLoading = false;
+        draft.st_personalMypageYouDone = true;
+        draft.st_personalMypageYouError = null;
+        draft.mypageYouPersnal = action.data.sale;
+        draft.mypageYouPrice = action.data.allPrice;
+        draft.lastPageYou = action.data.lastPage;
+
+        break;
+
+      case PERSONAL_MYPAGE_YOU_FAILURE:
+        draft.st_personalMypageYouLoading = false;
+        draft.st_personalMypageYouDone = false;
+        draft.st_personalMypageYouError = action.error;
         break;
 
       ///////////////////////////////////////////////////////

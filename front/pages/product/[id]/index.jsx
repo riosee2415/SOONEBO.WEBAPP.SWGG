@@ -234,7 +234,7 @@ const Index = () => {
   // 바로 구매 장바구니 담기
   useEffect(() => {
     if (st_wishItemnBuyAddDone) {
-      sessionStorage.setItem("buy-az", JSON.stringify(buyItems));
+      sessionStorage.setItem("buy-swgg", JSON.stringify(buyItems));
 
       return router.push("/order");
     }
@@ -507,8 +507,23 @@ const Index = () => {
                     value={detail && detail.content}
                   />
 
+                  {/* 배송기간 */}
                   <Wrapper dr={`row`} ju={`flex-start`} margin={`25px 0 0`}>
                     <Text
+                      width={`50px`}
+                      color={Theme.grey_C}
+                      margin={`0 20px 0 0`}
+                      fontWeight={`600`}
+                    >
+                      배송기간
+                    </Text>
+                    <Text>3일 후 배송완료</Text>
+                  </Wrapper>
+
+                  {/* 배송비 */}
+                  <Wrapper dr={`row`} ju={`flex-start`}>
+                    <Text
+                      width={`50px`}
                       color={Theme.grey_C}
                       margin={`0 20px 0 0`}
                       fontWeight={`600`}
