@@ -185,7 +185,7 @@ const userSuggestion = () => {
       data: {
         username: username.value,
         email: email.value,
-        agencyId: name,
+        agencyId: 5,
         gradeId: lvValue,
         dateSort: dateToggle,
       },
@@ -227,11 +227,11 @@ const userSuggestion = () => {
 
   const nameHandler = useCallback(
     (data) => {
-      setName(data);
+      setName(5);
       dispatch({
         type: USER_SUGGESTION_REQUEST,
         data: {
-          agencyId: data,
+          agencyId: 5,
           gradeId: lvValue,
         },
       });
@@ -246,7 +246,7 @@ const userSuggestion = () => {
         type: USER_UNDER_REQUEST,
         data: {
           parentId: modalId,
-          agencyId: data,
+          agencyId: 5,
         },
       });
     },
@@ -260,7 +260,7 @@ const userSuggestion = () => {
         type: USER_SUGGESTION_REQUEST,
         data: {
           gradeId: data,
-          agencyId: name,
+          agencyId: 5,
         },
       });
     },
@@ -274,7 +274,7 @@ const userSuggestion = () => {
         data: {
           username: username.value,
           email: email.value,
-          agencyId: name,
+          agencyId: 5,
           gradeId: lvValue,
           dateSort: dateToggle,
         },
@@ -324,7 +324,7 @@ const userSuggestion = () => {
         data: {
           username: username.value,
           email: email.value,
-          agencyId: name,
+          agencyId: 5,
           gradeId: lvValue,
           dateSort: 2,
         },
@@ -337,7 +337,7 @@ const userSuggestion = () => {
         data: {
           username: username.value,
           email: email.value,
-          agencyId: name,
+          agencyId: 5,
           gradeId: lvValue,
           dateSort: 1,
         },
@@ -353,7 +353,7 @@ const userSuggestion = () => {
         type: USER_UNDER_REQUEST,
         data: {
           parentId: modalId,
-          agencyId: modalName,
+          agencyId: 5,
           dateSort: 2,
         },
       });
@@ -364,7 +364,7 @@ const userSuggestion = () => {
         type: USER_UNDER_REQUEST,
         data: {
           parentId: modalId,
-          agencyId: modalName,
+          agencyId: 5,
           dateSort: 1,
         },
       });
