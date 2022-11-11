@@ -311,8 +311,8 @@ const AppHeader = ({ children, width }) => {
               <a>
                 <Image
                   alt="logo"
-                  width={`112px`}
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/sunaebo/assets/images/logo/header_logo.png`}
+                  width={`84px`}
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/sunaebo/assets/images/logo/logo_swgg.png`}
                 />
               </a>
             </Link>
@@ -565,8 +565,8 @@ const AppHeader = ({ children, width }) => {
           <Wrapper width={`auto`} al={`flex-start`}>
             <ATag width={`auto`} href="/">
               <Image
-                width={`70px`}
-                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/sunaebo/assets/images/logo/header_logo.png`}
+                width={`50px`}
+                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/sunaebo/assets/images/logo/logo_swgg.png`}
               />
             </ATag>
           </Wrapper>
@@ -584,8 +584,8 @@ const AppHeader = ({ children, width }) => {
             <Wrapper dr={`row`} ju={`space-between`} fontSize={`1.5rem`}>
               <ATag width={`auto`} href="/">
                 <Image
-                  width={`70px`}
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/sunaebo/assets/images/logo/header_logo.png`}
+                  width={`50px`}
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/sunaebo/assets/images/logo/logo_swgg.png`}
                 />
               </ATag>
               <CloseOutlined onClick={drawarToggle} />
