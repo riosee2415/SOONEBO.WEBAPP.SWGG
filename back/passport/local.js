@@ -27,9 +27,19 @@ module.exports = () => {
               reason: "탈퇴한 회원은 로그인할 수 없습니다.",
             });
           }
-          // admin 계정은 모든 관리자에 로그인이 가능하고, 대리점 어드민은 자기 대리점만 로그인할 수 있어야함.
-          if (user.level < 4) {
-            if (user.AgencyId !== 1 || user.AgencyId !== 5) {
+
+          if (user.level < 5) {
+            if (user.AgencyId === 1 || user.AgencyId === 5) {
+              const result = await bcrypt.compare(password, user.password);
+
+              if (result) {
+                return done(null, user);
+              }
+
+              return done(null, false, {
+                reason: "비밀번호가 일치하지 않습니다.",
+              });
+            } else {
               return done(null, false, {
                 reason: "해당 대리점 소속 회원이 아닙니다.",
               });
@@ -37,11 +47,14 @@ module.exports = () => {
           }
 
           const result = await bcrypt.compare(password, user.password);
+
           if (result) {
             return done(null, user);
           }
 
-          return done(null, false, { reason: "비밀번호가 일치하지 않습니다." });
+          return done(null, false, {
+            reason: "비밀번호가 일치하지 않습니다.",
+          });
         } catch (error) {
           console.error(error);
           return done(error);
