@@ -28,8 +28,18 @@ module.exports = () => {
             });
           }
 
-          if (user.level < 4) {
-            if (user.AgencyId !== 5) {
+          if (user.level < 5) {
+            if (user.AgencyId === 1 || user.AgencyId === 5) {
+              const result = await bcrypt.compare(password, user.password);
+
+              if (result) {
+                return done(null, user);
+              }
+
+              return done(null, false, {
+                reason: "비밀번호가 일치하지 않습니다.",
+              });
+            } else {
               return done(null, false, {
                 reason: "해당 대리점 소속 회원이 아닙니다.",
               });
@@ -37,11 +47,14 @@ module.exports = () => {
           }
 
           const result = await bcrypt.compare(password, user.password);
+
           if (result) {
             return done(null, user);
           }
 
-          return done(null, false, { reason: "비밀번호가 일치하지 않습니다." });
+          return done(null, false, {
+            reason: "비밀번호가 일치하지 않습니다.",
+          });
         } catch (error) {
           console.error(error);
           return done(error);

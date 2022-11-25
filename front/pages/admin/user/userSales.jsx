@@ -174,7 +174,7 @@ const UserList = ({}) => {
         notAny: true,
 
         gradeId: listUserGrade,
-        agencyId: listUserAgency,
+        agencyId: 5,
         username: listUsername,
         email: listUserEmail,
         dateSort: listSort,
@@ -203,7 +203,7 @@ const UserList = ({}) => {
         data: {
           notAny: true,
           gradeId: listUserGrade,
-          agencyId: listUserAgency,
+          agencyId: 5,
           username: listUsername,
           email: listUserEmail,
           dateSort: listSort,
@@ -231,7 +231,7 @@ const UserList = ({}) => {
         data: {
           notAny: true,
           gradeId: listUserGrade,
-          agencyId: listUserAgency,
+          agencyId: 5,
           username: listUsername,
           email: listUserEmail,
           dateSort: listSort,
@@ -276,7 +276,7 @@ const UserList = ({}) => {
         data: {
           notAny: true,
           gradeId: listUserGrade,
-          agencyId: listUserAgency,
+          agencyId: 5,
           username: listUsername,
           email: listUserEmail,
           dateSort: listSort,
@@ -410,7 +410,7 @@ const UserList = ({}) => {
         password: data.password,
         managerId: JSON.parse(data.managerId).id,
         isAgency: data.isAgency,
-        agencyId: JSON.parse(data.agencyId).id,
+        agencyId: JSON.parse(5).id,
       },
     });
   }, []);

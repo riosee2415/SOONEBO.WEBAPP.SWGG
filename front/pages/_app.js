@@ -55,8 +55,8 @@ const Fourleaf = ({ Component }) => {
         <meta name="author" content="4LEAF SOFTWARE <4leaf.ysh@gmail.com>" />
         {/* <!-- OG tag  --> */}
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="순애보" />
-        <meta property="og:site_name" content="순애보" />
+        <meta property="og:title" content="순애보 수원광교점" />
+        <meta property="og:site_name" content="순애보 수원광교점" />
         <meta property="og:url" content="https://www.sunaebo-az.com/" />
         <meta property="og:image:width" content="800" />
         <meta property="og:image:height" content="400" />

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import dynamic from "next/dynamic";
 import AdminLayout from "../../../components/AdminLayout";
 import PageHeader from "../../../components/admin/PageHeader";
 import styled from "styled-components";
@@ -15,6 +14,7 @@ import {
   Input,
   Row,
   Col,
+  Select,
 } from "antd";
 
 import { useRouter, withRouter } from "next/router";
@@ -24,22 +24,17 @@ import axios from "axios";
 import {
   Wrapper,
   AdminContent,
-  ModalBtn,
-  GuideUl,
-  GuideLi,
   GuideDiv,
 } from "../../../components/commonComponents";
-import { LOAD_MY_INFO_REQUEST, USERLIST_REQUEST } from "../../../reducers/user";
+import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import {
   AGENCY_SALES_LIST_REQUEST,
   IN_AGENCY_SALES_LIST_REQUEST,
 } from "../../../reducers/sale";
 import Theme from "../../../components/Theme";
 import moment from "moment";
-
-const Chart = dynamic(() => import("react-apexcharts"), {
-  ssr: false,
-});
+import useWidth from "../../../hooks/useWidth";
+import { SEARCH_AGENCY_LIST_REQUEST } from "../../../reducers/agency";
 
 const LoadNotification = (msg, content) => {
   notification.open({
@@ -49,24 +44,35 @@ const LoadNotification = (msg, content) => {
   });
 };
 
-const UserDeliAddress = ({}) => {
+const CustomSelect = styled(Select)`
+  width: ${(props) => props.width || `100%`};
+`;
+
+const GetList = ({}) => {
+  ////// GLOBAL STATE //////
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
-  const { agencySales, inAgencySales } = useSelector((state) => state.sale);
+
+  const { agencySales, inAgencySales, st_agencySalesListDone } = useSelector(
+    (state) => state.sale
+  );
+
+  const { searchAgencys } = useSelector((state) => state.agency);
+
+  ////// HOOKS //////
+  const width = useWidth();
+
+  const router = useRouter();
+
+  const dispatch = useDispatch();
+
+  const { RangePicker } = DatePicker;
 
   const [sStartDate, setSStartDate] = useState("");
   const [sEndDate, setSEndDate] = useState("");
   const [sValue, setSValue] = useState("");
   const [dModal, setDModal] = useState(false);
-  const [saleChartState, setSaleChartState] = useState(null);
 
-  const router = useRouter();
-  const [sForm] = Form.useForm();
-  const { RangePicker } = DatePicker;
-
-  const moveLinkHandler = useCallback((link) => {
-    router.push(link);
-  }, []);
-
+  ////// USEEFFECT //////
   useEffect(() => {
     if (st_loadMyInfoDone) {
       if (!me || parseInt(me.level) < 3) {
@@ -74,53 +80,19 @@ const UserDeliAddress = ({}) => {
       }
     }
   }, [st_loadMyInfoDone]);
-  /////////////////////////////////////////////////////////////////////////
 
-  ////// HOOKS //////
-  const dispatch = useDispatch();
-
-  ////// USEEFFECT //////
-
-  // 차트 그리기
-  useEffect(() => {
-    if (agencySales) {
-      setSaleChartState({
-        series: [
-          {
-            data: agencySales.map((data) => data.originAvgPrice),
-          },
-        ],
-        options: {
-          labels: agencySales.map((data) => data.agencyName),
-          chart: {
-            height: 350,
-            type: "line",
-            zoom: {
-              enabled: false,
-            },
-          },
-          dataLabels: {
-            enabled: false,
-          },
-          stroke: {
-            curve: "straight",
-          },
-          title: {
-            text: "대리점별 평균 매출 그래프",
-            align: "left",
-          },
-          grid: {
-            row: {
-              colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-              opacity: 0.5,
-            },
-          },
-        },
-      });
-    }
-  }, [agencySales]);
+  // useEffect(() => {
+  //   if (st_agencySalesListDone) {
+  //     if (agencySales.length === 0) {
+  //       return message.error("조회된 대리점의 매출이 없습니다.");
+  //     }
+  //   }
+  // }, [sValue, agencySales, st_agencySalesListDone]);
 
   ////// HANDLER //////
+  const moveLinkHandler = useCallback((link) => {
+    router.push(link);
+  }, []);
 
   const detailModalToggle = useCallback(
     (name = null) => {
@@ -164,11 +136,11 @@ const UserDeliAddress = ({}) => {
         data: {
           startDate: sStartDate || currentDate,
           endDate: sEndDate || currentDate,
-          searchValue: data.searchValue,
+          searchValue: "SWGG",
         },
       });
 
-      setSValue(data.searchValue);
+      setSValue(data);
     },
     [sValue, sStartDate, sEndDate]
   );
@@ -191,11 +163,11 @@ const UserDeliAddress = ({}) => {
         data: {
           startDate: sendDate[0],
           endDate: sendDate[1],
-          searchValue: sValue,
+          searchValue: "SWGG",
         },
       });
     },
-    [sStartDate, sEndDate, sValue]
+    [sStartDate, sEndDate]
   );
 
   ////// DATAVIEW //////
@@ -238,12 +210,48 @@ const UserDeliAddress = ({}) => {
     },
   ];
 
+  const inAgency = [
+    {
+      title: "번호",
+      dataIndex: "num",
+    },
+
+    {
+      title: "이름",
+      dataIndex: "username",
+    },
+    {
+      title: "휴대폰 번호",
+      dataIndex: "mobile",
+    },
+    {
+      title: "이메일",
+      dataIndex: "email",
+    },
+    {
+      title: "매출",
+      dataIndex: "viewPrice",
+    },
+    {
+      title: "매출발생시점 등급",
+      dataIndex: "gradeString",
+    },
+    {
+      title: "현재 등급",
+      dataIndex: "currentGrade",
+    },
+    {
+      title: "매출발생일",
+      dataIndex: "viewCreatedAt",
+    },
+  ];
+
   return (
     <AdminLayout>
       <PageHeader
-        breadcrumbs={["매출 관리", "대리점 별 매출관리"]}
-        title={`대리점 별 매출관리`}
-        subTitle={`기간에 따른 대리점 별 매출관리를 확인할 수 있습니다.`}
+        breadcrumbs={["매출 관리", "전체 매출관리"]}
+        title={`전체 매출관리`}
+        subTitle={`기간에 따른 전체 매출관리를 확인할 수 있습니다.`}
       />
 
       <AdminContent>
@@ -255,35 +263,28 @@ const UserDeliAddress = ({}) => {
           borderBottom={`1px dashed ${Theme.lightGrey4_C}`}
           padding="5px 0px"
         >
-          <Wrapper width="50%" dr="row" ju="flex-start">
-            <Form
-              form={sForm}
-              style={{ width: "300px" }}
-              onFinish={serachFormFinish}
-            >
-              <Row gutter={4}>
-                <Col span={16}>
-                  <Form.Item name="searchValue" style={{ marginBottom: 0 }}>
-                    <Input
-                      size="small"
-                      allowClear
-                      placeholder="대리점명으로 검색하세요."
-                    />
-                  </Form.Item>
-                </Col>
+          {/* <CustomSelect
+            width={`200px`}
+            value={sValue}
+            onChange={serachFormFinish}
+            size="small"
+          >
+            <Select.Option value="" disabled={true}>
+              대리점명을 선택해주세요.
+            </Select.Option>
+            {searchAgencys &&
+              searchAgencys.map((data) => (
+                <Select.Option key={data.id} value={data.name}>
+                  {data.name}
+                </Select.Option>
+              ))}
+          </CustomSelect> */}
 
-                <Col span={8}>
-                  <Form.Item style={{ marginBottom: 0 }}>
-                    <Button type="primary" size="small" htmlType="submit">
-                      검색
-                    </Button>
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form>
-          </Wrapper>
-
-          <Wrapper width="50%" dr="row" ju="flex-end">
+          <Wrapper
+            // width={width < 900 ? `100%` : `50%`}
+            dr="row"
+            ju={width < 900 ? `center` : `flex-end`}
+          >
             <RangePicker
               picker="month"
               defaultValue={[moment(), moment()]}
@@ -303,28 +304,66 @@ const UserDeliAddress = ({}) => {
           al="flex-start"
         >
           <GuideDiv isImpo={true}>
-            초기 조회값은 현재 월을 기준으로 조회합니다. 매출이 발생되지 않은
-            대리점은 목록에 보이지 않습니다.
-          </GuideDiv>
-          <GuideDiv isImpo={true}>
-            기간에 따른 매출관리를 확인할 수 있습니다.
-          </GuideDiv>
-          <GuideDiv isImpo={true}>
             초기 조회값은 현재 월을 기준으로 조회합니다.
           </GuideDiv>
           <GuideDiv isImpo={true}>
-            가독성을 위해 임의의 변경은 불가능합니다.
+            매출이 발생되지 않으면 목록에 보이지 않습니다.
+          </GuideDiv>
+
+          <GuideDiv isImpo={true}>
+            모바일에서는 가로스크롤로 확인해주세요.
           </GuideDiv>
         </Wrapper>
+        <Wrapper overflow={`auto`}>
+          <Wrapper width={`100%`} minWidth={`900px`}>
+            <Table
+              style={{ width: `100%` }}
+              rowKey="num"
+              columns={columns}
+              dataSource={agencySales}
+              size="small"
+            />
+          </Wrapper>
+        </Wrapper>
+        {/* DETAIL MODAL */}
+        <Modal
+          width="1100px"
+          title="기간 별 매출 건수 상세 내용"
+          footer={null}
+          visible={dModal}
+          onCancel={() => detailModalToggle()}
+        >
+          <>
+            <Wrapper
+              margin={`0px 0px 10px 0px`}
+              radius="5px"
+              bgColor={Theme.lightGrey5_C}
+              padding="5px"
+              fontSize="13px"
+              al="flex-start"
+            >
+              <GuideDiv isImpo={true}>
+                본 데이터는 기간 별 조회 기준으로 보여집니다.
+              </GuideDiv>
+              <GuideDiv isImpo={true}>
+                해당 화면에서는 기간별로 조회된 매출 내역이 보여지며, 보여지는
+                데이터를 제어할 수 없습니다.
+              </GuideDiv>
+            </Wrapper>
+            <Wrapper overflow={`auto`}>
+              <Wrapper width={`100%`} minWidth={`900px`}>
+                <Table
+                  style={{ width: `100%` }}
+                  rowKey="id"
+                  columns={inAgency}
+                  dataSource={inAgencySales}
+                  size="small"
+                />
+              </Wrapper>
+            </Wrapper>
+          </>
+        </Modal>
       </AdminContent>
-      {saleChartState && (
-        <Chart
-          options={saleChartState.options}
-          series={saleChartState.series}
-          type="bar"
-          height="550"
-        />
-      )}
     </AdminLayout>
   );
 };
@@ -358,8 +397,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
       data: {
         startDate: currentDate,
         endDate: currentDate,
-        searchValue: "",
+        searchValue: "SWGG",
       },
+    });
+
+    context.store.dispatch({
+      type: SEARCH_AGENCY_LIST_REQUEST,
     });
 
     // 구현부 종료
@@ -369,4 +412,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default withRouter(UserDeliAddress);
+export default withRouter(GetList);

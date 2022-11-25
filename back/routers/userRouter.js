@@ -47,6 +47,8 @@ router.post("/list", async (req, res, next) => {
             A.userPoint,
             A.isAgency,
             A.terms,
+            A.jobUpdatedAt,
+            DATE_FORMAT(A.jobUpdatedAt, "%Y년 %m월 %d일") AS viewJobUpdatedAt,
             A.createdAt ,
             A.updatedAt ,
             DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
@@ -196,7 +198,7 @@ SELECT	*
   }
 });
 
-router.post("/list/innerList", isAdminCheck, async (req, res, next) => {
+router.post("/list/innerList", async (req, res, next) => {
   const { parentId, dateSort, page } = req.body;
 
   const _dateSort = dateSort ? parseInt(dateSort) : 1;
@@ -381,7 +383,8 @@ router.patch("/job/update", isAdminCheck, async (req, res, next) => {
     const updateQuery = `
     UPDATE users
        SET UserGradeId = ${gradeId},
-           updatedAt = now()
+           updatedAt = NOW(),
+           jobUpdatedAt = NOW()
      WHERE id = ${id}
     `;
 
@@ -480,6 +483,7 @@ router.post("/admin/create", isAdminCheck, async (req, res, next) => {
         terms,
         createdAt,
         updatedAt,
+        jobUpdatedAt,
         UserGradeId,
         AgencyId 
     )
@@ -493,6 +497,7 @@ router.post("/admin/create", isAdminCheck, async (req, res, next) => {
        ${managerId},
        ${isAgency},
        1,
+       now(),
        now(),
        now(),
        1,
@@ -529,6 +534,8 @@ router.get("/signin", async (req, res, next) => {
                 A.isAgency,
                 A.level,
                 A.isExit,
+                A.jobUpdatedAt,
+                DATE_FORMAT(A.jobUpdatedAt, "%Y년 %m월 %d일") AS viewJobUpdatedAt,
                 A.terms,
                 A.createdAt,
                 A.updatedAt,
@@ -539,6 +546,7 @@ router.get("/signin", async (req, res, next) => {
                 A.bank,
                 A.accountNo,
                 B.lvValue,
+                B.possiblePayment,
                 C.username 									  	            AS recommUsername,
                 C.userId 										                AS recommUserId,
                 D.name											                AS agencyName,
@@ -597,7 +605,40 @@ router.post("/signin", (req, res, next) => {
         },
       });
 
-      return res.status(200).json(fullUserWithoutPassword);
+      const selectQuery = `
+      SELECT  DATE_FORMAT(DATE_ADD(jobUpdatedAt, INTERVAL + 30 DAY), "%Y%m%d")	AS overDay,
+              DATE_FORMAT(NOW(), "%Y%m%d")										                  AS today
+        FROM  users
+       WHERE  id = ${user.id}
+      `;
+
+      const list = await models.sequelize.query(selectQuery);
+
+      if (parseInt(parseInt(list[0][0].overDay)) > parseInt(list[0][0].today)) {
+        const findDate = `
+        SELECT  DATE_FORMAT(DATE_ADD(jobUpdatedAt, INTERVAL + 30 DAY), "%Y-%m-%d")	AS overDay
+          FROM  users
+         WHERE  id = ${user.id}
+        `;
+
+        const findResult = await models.sequelize.query(findDate);
+
+        const updateQuery = `
+        UPDATE  users
+           SET  jobUpdatedAt = "${findResult[0][0].overDay}"
+         WHERE  id = ${user.id}
+        `;
+
+        await models.sequelize.query(updateQuery);
+
+        return res.status(200).json(fullUserWithoutPassword);
+      }
+
+      if (
+        parseInt(parseInt(list[0][0].overDay)) <= parseInt(list[0][0].today)
+      ) {
+        return res.status(200).json(fullUserWithoutPassword);
+      }
     });
   })(req, res, next);
 });
@@ -694,6 +735,7 @@ router.post("/signup", async (req, res, next) => {
           terms,
           createdAt,
           updatedAt,
+          jobUpdatedAt,
           UserGradeId,
           AgencyId 
       )
@@ -706,6 +748,7 @@ router.post("/signup", async (req, res, next) => {
          "${hashedPassword}",
          ${managerId},
          1,
+         now(),
          now(),
          now(),
          1,
@@ -730,6 +773,7 @@ router.post("/signup", async (req, res, next) => {
           terms,
           createdAt,
           updatedAt,
+          jobUpdatedAt,
           UserGradeId,
           AgencyId 
       )
@@ -742,6 +786,7 @@ router.post("/signup", async (req, res, next) => {
          "${hashedPassword}",
          ${managerId || null},
          1,
+         now(),
          now(),
          now(),
          5,
@@ -834,6 +879,7 @@ router.post("/snsJoin", async (req, res, next) => {
         AgencyId: agencyId,
         UserGradeId: 1,
         managerId: managerId,
+        jobUpdatedAt: new Date(),
       });
 
       return req.login(newUser, async (loginErr) => {
@@ -863,6 +909,7 @@ router.post("/snsJoin", async (req, res, next) => {
       AgencyId: agencyId,
       UserGradeId: 5,
       managerId: managerId ? managerId : null,
+      jobUpdatedAt: new Date(),
     });
 
     return req.login(newUser, async (loginErr) => {
@@ -898,6 +945,8 @@ router.get("/me", isLoggedIn, async (req, res, next) => {
           A.isAgency,
           A.isExit,
           A.terms,
+          A.jobUpdatedAt,
+          DATE_FORMAT(A.jobUpdatedAt, "%Y년 %m월 %d일") AS viewJobUpdatedAt,
           A.createdAt,
           A.updatedAt,
           DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
@@ -907,6 +956,7 @@ router.get("/me", isLoggedIn, async (req, res, next) => {
           A.bank,
           A.accountNo,
           B.lvValue,
+          B.possiblePayment,
           C.username 									  	            AS recommUsername,
           C.userId 										                AS recommUserId,
           D.name											                AS agencyName,

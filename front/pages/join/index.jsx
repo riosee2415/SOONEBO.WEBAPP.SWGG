@@ -232,7 +232,7 @@ const Index = () => {
         email: email.value,
         terms: isCheck,
         managerId: manager.value,
-        agencyId: 2,
+        agencyId: 5,
         isSale: userType,
       },
     });
@@ -276,7 +276,7 @@ const Index = () => {
           userId,
           password: req.profile.kakao_account.email,
           username: String(req.profile.kakao_account.profile.nickname),
-          agencyId: 2,
+          agencyId: 5,
           isSales: userType,
           managerId: manager.value,
         },
@@ -576,7 +576,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     context.store.dispatch({
       type: USERLIST_REQUEST,
       data: {
-        agencyId: 2,
+        agencyId: 5,
       },
     });
 

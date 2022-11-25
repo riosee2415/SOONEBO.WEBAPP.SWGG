@@ -60,13 +60,11 @@ const AppFooter = () => {
         </Wrapper>
         <>
           <Wrapper width={`auto`} dr={`row`}>
-            <Text>꿈자람교육</Text>
+            <Text>두드림교육</Text>
             <Text margin={`0 10px`} fontSize={width < 800 && `12px`}>
-              주소 : 경기도 수원시 영통구 도청로17번길 40 광교에듀타운 1층-R카페
+              주소 : 경기도 수원시 영통구 도청로17번길 40, 광교에듀타운 1층
             </Text>
-            <Text fontSize={width < 800 && `12px`}>
-              대표 : 박지영 park jo yeong
-            </Text>
+            <Text fontSize={width < 800 && `12px`}>대표 : 이소망</Text>
           </Wrapper>
           <Wrapper
             width={`auto`}
@@ -75,14 +73,12 @@ const AppFooter = () => {
             margin={`10px 0`}
           >
             <Text fontSize={width < 800 && `12px`}>
-              사업자등록번호 : 501-92-62805
+              사업자등록번호 : 214-20-53759
             </Text>
 
             <Text margin={`0 15px`}>|</Text>
 
-            <Text fontSize={width < 800 && `12px`}>
-              고객센터 : 055-715-5999
-            </Text>
+            <Text fontSize={width < 800 && `12px`}>고객센터 : 1522-4462</Text>
           </Wrapper>
 
           <Wrapper width={`auto`} dr={`row`} margin={`0 0 10px`}>

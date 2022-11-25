@@ -96,6 +96,47 @@ router.post("/persnalData", isAdminCheck, async (req, res, next) => {
   }
 });
 
+router.post("/mypage/persnalData", isLoggedIn, async (req, res, next) => {
+  const { startDate, endDate } = req.body;
+
+  let selectQ = `
+   SELECT	  ROW_NUMBER() OVER()							            AS	num,
+            A.id,
+            A.content,
+            A.price,
+            CONCAT(FORMAT(A.price, 0), "원")		         AS  viewPrice,
+            A.gradeString,
+            A.createdAt,
+            A.UserId,
+            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+            B.userId,
+            B.username,
+            C.name
+     FROM 	sales		A
+    INNER
+     JOIN	  users	  B
+      ON	  A.UserId = B.id
+     LEFT
+    OUTER
+     JOIN	  agencys C
+       ON	  B.AgencyId = C.id
+    WHERE	  A.content = "매출"
+      AND	  DATE_FORMAT(A.createdAt, "%Y%m%d") >= "${startDate}"
+      AND	  DATE_FORMAT(A.createdAt, "%Y%m%d") <= "${endDate}"\n
+      AND	  A.UserId = ${req.user.id}
+    ORDER   BY  A.createdAt DESC
+    `;
+
+  try {
+    const result = await models.sequelize.query(selectQ);
+
+    return res.status(200).json(result[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send("데이터를 조회할 수 없습니다.");
+  }
+});
+
 router.post("/myemplist", isAdminCheck, async (req, res, next) => {
   const { startDate, endDate, userId } = req.body;
 
@@ -428,55 +469,59 @@ router.post("/myPage/list", isLoggedIn, async (req, res, next) => {
 
   const lengthQuery = `
   SELECT	ROW_NUMBER() OVER()							AS	num,
-          A.id,
-          A.content,
-          A.price,
-          CONCAT(FORMAT(A.price, 0), "원")		AS  viewPrice,
-          A.gradeString,
-          A.createdAt,
+          SUM(A.price) 			AS price,
+          CONCAT(FORMAT(SUM(A.price), 0), "원")		AS  viewPrice,
           A.UserId,
-          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
           B.userId,
           B.username,
-          C.name
-   FROM 	sales		A
-  INNER
-   JOIN	users	B
-    ON	A.UserId = B.id
-   LEFT
-  OUTER
-   JOIN	agencys C
-     ON	B.AgencyId = C.id
-  WHERE	A.content = "매출"
-    AND	A.UserId in (${persnalId})
+          C.name,
+          (
+			      SELECT 	lvValue
+			        FROM	userGrade
+			       WHERE 	id = B.UserGradeId
+          ) AS gradeString
+    FROM 	sales		A
+   INNER
+    JOIN	users	B
+      ON	A.UserId = B.id
+    LEFT
+   OUTER
+    JOIN	agencys C
+      ON	B.AgencyId = C.id
+   WHERE	A.content = "매출"
+     AND	A.UserId in (${persnalId})
+     AND  MONTH(A.createdAt) = MONTH(now())
+   GROUP  BY  A.UserId
+    
 `;
 
   const selectQuery = `
-    SELECT	ROW_NUMBER() OVER(ORDER BY  A.createdAt ASC)	AS	num,
-            A.id,
-            A.content,
-            A.price,
-            CONCAT(FORMAT(A.price, 0), "원")		AS  viewPrice,
-            A.gradeString,
-            A.createdAt,
-            A.UserId,
-            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
-            B.userId,
-            B.username,
-            C.name
-     FROM 	sales		A
-    INNER
-     JOIN	users	B
+  SELECT	ROW_NUMBER() OVER()							        AS	num,
+          SUM(A.price) 			AS price,
+          CONCAT(FORMAT(SUM(A.price), 0), "원")		AS  viewPrice,
+          A.UserId,
+          B.userId,
+          B.username,
+          C.name,
+          (
+			      SELECT 	lvValue
+			        FROM	userGrade
+			       WHERE 	id = B.UserGradeId
+          ) AS gradeString
+    FROM 	sales		A
+   INNER
+    JOIN	users	B
       ON	A.UserId = B.id
-     LEFT
-    OUTER
-     JOIN	agencys C
-       ON	B.AgencyId = C.id
-    WHERE	A.content = "매출"
-	    AND	A.UserId in (${persnalId})
-    ORDER BY  A.createdAt	DESC
-    LIMIT ${LIMIT}
-   OFFSET ${OFFSET}
+    LEFT
+   OUTER
+    JOIN	agencys C
+      ON	B.AgencyId = C.id
+   WHERE	A.content = "매출"
+     AND	A.UserId in (${persnalId})
+     AND  MONTH(A.createdAt) = MONTH(now())
+   GROUP  BY  A.UserId
+   LIMIT ${LIMIT}
+  OFFSET ${OFFSET}
   `;
 
   const saleQuery = `
@@ -494,6 +539,22 @@ router.post("/myPage/list", isLoggedIn, async (req, res, next) => {
     ORDER BY  A.createdAt	DESC
   `;
 
+  const nowSaleQuery = `
+  SELECT	SUM(A.price)  AS  sumSale
+    FROM sales		A
+   INNER
+    JOIN	users	B
+     ON	A.UserId = B.id
+    LEFT
+   OUTER
+    JOIN	agencys C
+      ON	B.AgencyId = C.id
+   WHERE	A.content = "매출"
+     AND	A.UserId in (${persnalId})
+     AND  MONTH(A.createdAt) = MONTH(now())
+   ORDER BY  A.createdAt	DESC
+ `;
+
   try {
     const length = await models.sequelize.query(lengthQuery);
     const lengthResult = length[0].length;
@@ -504,10 +565,13 @@ router.post("/myPage/list", isLoggedIn, async (req, res, next) => {
 
     const result = await models.sequelize.query(selectQuery);
     const sale = await models.sequelize.query(saleQuery);
+    const nowSale = await models.sequelize.query(nowSaleQuery);
+
     return res.status(200).json({
       sale: result[0],
       allPrice: sale[0],
       lastPage: parseInt(lastPage),
+      nowPrice: nowSale[0],
     });
   } catch (err) {
     console.error(err);
@@ -548,6 +612,7 @@ router.post("/myPage/list/my", async (req, res, next) => {
        ON	B.AgencyId = C.id
     WHERE	A.content = "매출"
 	    AND	A.UserId in (${persnalId})
+      AND MONTH(A.createdAt) = MONTH(now())
   `;
 
   const selectQuery = `
@@ -573,6 +638,7 @@ router.post("/myPage/list/my", async (req, res, next) => {
        ON	B.AgencyId = C.id
     WHERE	A.content = "매출"
 	    AND	A.UserId in (${persnalId})
+      AND MONTH(A.createdAt) = MONTH(now())
     ORDER BY  A.createdAt	DESC
     LIMIT ${LIMIT}
    OFFSET ${OFFSET}
@@ -593,6 +659,22 @@ router.post("/myPage/list/my", async (req, res, next) => {
     ORDER BY  A.createdAt	DESC
   `;
 
+  const nowSaleQuery = `
+  SELECT	SUM(A.price)  AS  sumSale
+    FROM sales		A
+   INNER
+    JOIN	users	B
+     ON	A.UserId = B.id
+    LEFT
+   OUTER
+    JOIN	agencys C
+      ON	B.AgencyId = C.id
+   WHERE	A.content = "매출"
+     AND	A.UserId in (${persnalId})
+     AND  MONTH(A.createdAt) = MONTH(now())
+   ORDER BY  A.createdAt	DESC
+ `;
+
   try {
     const length = await models.sequelize.query(lengthQuery);
     const lengthResult = length[0].length;
@@ -603,10 +685,13 @@ router.post("/myPage/list/my", async (req, res, next) => {
 
     const result = await models.sequelize.query(selectQuery);
     const sale = await models.sequelize.query(saleQuery);
+    const nowSale = await models.sequelize.query(nowSaleQuery);
+
     return res.status(200).json({
       sale: result[0],
       allPrice: sale[0],
       lastPage: parseInt(lastPage),
+      nowPrice: nowSale[0],
     });
   } catch (err) {
     console.error(err);
@@ -626,28 +711,118 @@ router.post("/myPage/list/you", async (req, res, next) => {
 
   const lengthQuery = `
   SELECT	ROW_NUMBER() OVER()							AS	num,
-          A.id,
-          A.content,
-          A.price,
-          CONCAT(FORMAT(A.price, 0), "원")		AS  viewPrice,
-          A.gradeString,
-          A.createdAt,
+          SUM(A.price) 			AS price,
+          CONCAT(FORMAT(SUM(A.price), 0), "원")		AS  viewPrice,
           A.UserId,
-          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
           B.userId,
           B.username,
-          C.name
-   FROM 	sales		A
-  INNER
-   JOIN	users	B
-    ON	A.UserId = B.id
-   LEFT
-  OUTER
-   JOIN	agencys C
-     ON	B.AgencyId = C.id
-  WHERE	A.content = "매출"
-    AND	A.UserId in (${persnalId})
+          C.name,
+          (
+			      SELECT 	lvValue
+			        FROM	userGrade
+			       WHERE 	id = B.UserGradeId
+          ) AS gradeString
+    FROM 	sales		A
+   INNER
+    JOIN	users	B
+      ON	A.UserId = B.id
+    LEFT
+   OUTER
+    JOIN	agencys C
+      ON	B.AgencyId = C.id
+   WHERE	A.content = "매출"
+     AND	A.UserId in (${persnalId})
+     AND  MONTH(A.createdAt) = MONTH(now())
+   GROUP  BY  A.UserId
+    
 `;
+
+  const selectQuery = `
+    SELECT	ROW_NUMBER() OVER()							AS	num,
+          SUM(A.price) 			AS price,
+          CONCAT(FORMAT(SUM(A.price), 0), "원")		AS  viewPrice,
+          A.UserId,
+          B.userId,
+          B.username,
+          C.name,
+          (
+			      SELECT 	lvValue
+			        FROM	userGrade
+			       WHERE 	id = B.UserGradeId
+          ) AS gradeString
+    FROM 	sales		A
+   INNER
+    JOIN	users	B
+      ON	A.UserId = B.id
+    LEFT
+   OUTER
+    JOIN	agencys C
+      ON	B.AgencyId = C.id
+   WHERE	A.content = "매출"
+     AND	A.UserId in (${persnalId})
+     AND  MONTH(A.createdAt) = MONTH(now())
+   GROUP  BY  A.UserId
+   LIMIT ${LIMIT}
+  OFFSET ${OFFSET}
+  `;
+
+  const saleQuery = `
+   SELECT	SUM(A.price)  AS  sumSale
+     FROM sales		A
+    INNER
+     JOIN	users	B
+      ON	A.UserId = B.id
+     LEFT
+    OUTER
+     JOIN	agencys C
+       ON	B.AgencyId = C.id
+    WHERE	A.content = "매출"
+	    AND	A.UserId in (${persnalId})
+    ORDER BY  A.createdAt	DESC
+  `;
+
+  const nowSaleQuery = `
+  SELECT	SUM(A.price)  AS  sumSale
+    FROM sales		A
+   INNER
+    JOIN	users	B
+     ON	A.UserId = B.id
+    LEFT
+   OUTER
+    JOIN	agencys C
+      ON	B.AgencyId = C.id
+   WHERE	A.content = "매출"
+     AND	A.UserId in (${persnalId})
+     AND  MONTH(A.createdAt) = MONTH(now())
+   ORDER BY  A.createdAt	DESC
+ `;
+
+  try {
+    const length = await models.sequelize.query(lengthQuery);
+    const lengthResult = length[0].length;
+    const lastPage =
+      lengthResult % LIMIT > 0
+        ? lengthResult / LIMIT + 1
+        : lengthResult / LIMIT;
+
+    const result = await models.sequelize.query(selectQuery);
+    const sale = await models.sequelize.query(saleQuery);
+    const nowSale = await models.sequelize.query(nowSaleQuery);
+
+    return res.status(200).json({
+      sale: result[0],
+      allPrice: sale[0],
+      lastPage: parseInt(lastPage),
+      nowPrice: nowSale[0],
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(400).send(`데이터를 조회할 수 없습니다.`);
+  }
+});
+
+router.post("/myPage/list/detail", async (req, res, next) => {
+  const { persnalId } = req.body;
 
   const selectQuery = `
     SELECT	ROW_NUMBER() OVER(ORDER BY  A.createdAt ASC)	AS	num,
@@ -672,9 +847,8 @@ router.post("/myPage/list/you", async (req, res, next) => {
        ON	B.AgencyId = C.id
     WHERE	A.content = "매출"
 	    AND	A.UserId in (${persnalId})
+      AND MONTH(A.createdAt) = MONTH(now())
     ORDER BY  A.createdAt	DESC
-    LIMIT ${LIMIT}
-   OFFSET ${OFFSET}
   `;
 
   const saleQuery = `
@@ -693,19 +867,11 @@ router.post("/myPage/list/you", async (req, res, next) => {
   `;
 
   try {
-    const length = await models.sequelize.query(lengthQuery);
-    const lengthResult = length[0].length;
-    const lastPage =
-      lengthResult % LIMIT > 0
-        ? lengthResult / LIMIT + 1
-        : lengthResult / LIMIT;
-
     const result = await models.sequelize.query(selectQuery);
     const sale = await models.sequelize.query(saleQuery);
     return res.status(200).json({
       sale: result[0],
       allPrice: sale[0],
-      lastPage: parseInt(lastPage),
     });
   } catch (err) {
     console.error(err);
