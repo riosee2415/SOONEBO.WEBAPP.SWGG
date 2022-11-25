@@ -1287,6 +1287,198 @@ const Index = () => {
                     제32조제1항제1호).
                   </Text>
                 </Wrapper>
+
+                <Wrapper
+                  al={`flex-start`}
+                  margin={`10px 0 5px`}
+                  fontWeight={`bold`}
+                >
+                  ④휴대폰 결제 환불
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>휴대폰 결제의 경우 당월만 결제 취소가 가능합니다.</Text>
+                </Wrapper>
+                <Wrapper
+                  al={`flex-start`}
+                  margin={`10px 0 5px`}
+                  fontWeight={`bold`}
+                >
+                  ⑤취소
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    ① 회사는 품절 등의 사유로 회원이 구매 신청한 재화 등을 인도
+                    또는 제공을 할 수 없을 때에는 지체없이 그 사유를 이용자에게
+                    통지하고, 사전에 재화 등의 대금을 받은 경우에는 대금을 받은
+                    날부터 3영업일 이내에 환급하거나 환급에 필요한 조치를
+                    취합니다.
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    ② 회원은 구매한 상품 등이 발송되기 전까지 취소요청을 할 수
+                    있으며, 배송 중인 경우에는 취소 요청이 아닌 반품 절차에 따라
+                    처리됩니다.
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    ③ 단, 홈페이지를 통하여 상품 준비중으로 표시되더라도 실제로
+                    발송이 이루어진 경우, 혹은 주문제작(생산)이 시작된 등 특별한
+                    사정이 있는 경우, 회사는 회원의 취소 요청에 대하여
+                    거부하거나 보류할 수 있으며, 이 경우 구매회원에게 별도로
+                    고지(사이트를 통한 안내 포함)합니다.
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    ④ 상품 등의 구매계약 체결 이후에도 배송을 위한 정보가
+                    충분하지 않거나 정상적인 거래의 이행이 불가능하다고 판단될
+                    경우 회사의 판단 하에 구매계약이 취소처리 될 수 있습니다.
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    ⑤ 취소 처리에 따른 환불은 제 조에 따라 처리합니다.
+                  </Text>
+                </Wrapper>
+                <Wrapper
+                  al={`flex-start`}
+                  margin={`10px 0 5px`}
+                  fontWeight={`bold`}
+                >
+                  ⑥환급 및 환불
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    ① 상품 등의 구매 취소 또는 반품 완료 처리에 의하여 회원에
+                    대한 환불 사유가 발생할 시 회사는 3영업일 이내에 이미
+                    지급받은 상품 등의 대금을 환급하거나 환불에 필요한 조치를
+                    취합니다. 약정한 기간보다 회사가 회원에게 상품 등의 환불을
+                    지연한 때에는 그 지연기간에 대하여 전자상거래법 시행령이
+                    정하는 지연이자율을 곱하여 산정한 지연이자를 지급합니다.
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    ② 환불은 원칙적으로 회원이 최초 지급한 결제수단을 통하여
+                    진행합니다. 단, 선불카드를 통해 결제 건 및 결제 수단별 취소
+                    가능 기간 경과하여 최초 지급한 결제 수단으로 환불이 불가한
+                    경우, 회사의 예치금 방식으로 환불을 진행합니다.
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    ③ 회사는 위 대금을 환불함에 있어서 회원이 신용카드 또는
+                    전자화폐 등의 결제수단으로 상품 등의 대금을 지급한 때에는
+                    지체 없이 당해 결제수단을 제공한 사업자로 하여금 상품 등의
+                    대금의 청구를 정지 또는 취소하도록 요청합니다.
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    ④ 홈페이지의 현금 결제 및 예치금에 대한 환불은 주문 시 사전
+                    입력한 계좌번호 또는 예치금으로 입금하는 방법으로 진행하며,
+                    환불 금액 또는 환불 예정 금액을 입금 받지 아니하고 다른 상품
+                    등을 주문하는 수단으로 사용할 수 없습니다.
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    ⑤ 상품 등을 구매하여 포인트를 지급 받은 경우 해당 상품의
+                    취소 시 지급 받은 포인트를 환급하여야 취소가 가능합니다. 단,
+                    포인트 환급이 불가할 경우 그에 상응하는 대금을 회사에
+                    지급(결제대금 차감 포함)하여야 취소가 가능합니다.
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    ⑥ 본 조 제2항 내지 제4항에도 불구하고, 계좌번호 입력 오류,
+                    이용불가 계좌, 결제수단 제공자의 사유 등 환불이 불가능한
+                    경우 다음 각 호 중 1의 방법으로 처리합니다.
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`} margin={`0 0 0 20px`}>
+                  <Text>1. 회원에게 개별 연락하여 확인 후 계좌 입금</Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`} margin={`0 0 0 20px`}>
+                  <Text>
+                    2. 환불예정금액으로 표시 및 보관처리하고, 추후 회원의 요청에
+                    따라 계좌 입금
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`} margin={`0 0 0 20px`}>
+                  <Text>3. 홈페이지에서 사용 가능한 예치금으로 환급</Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    ⑦ 부분 주문 취소 또는 부분 반품 시 환불 되는 금액은
+                    할인서비스의 적용 조건이 달라짐에 따라 회원이 예상하던
+                    금액과 다소 상이할 수 있습니다.
+                  </Text>
+                </Wrapper>
+                <Wrapper
+                  al={`flex-start`}
+                  margin={`10px 0 5px`}
+                  fontWeight={`bold`}
+                >
+                  ⑦반품/교환/환불의 적용 배제
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    다음의 각 호의 경우에는 회원의 구매 철회가 제한될 수
+                    있습니다. (단, 상품 불량, 표시/광고 내용과 상이한 경우에는
+                    제한되지 아니합니다.)
+                  </Text>
+                </Wrapper>
+
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    1. 상품 등을 수령한 날로부터 15일을 경과한 이후 회원의
+                    단순변심으로 교환/반품 요청을 하는 경우
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    2. 회원의 귀책사유로 말미암아 상품이 멸실·훼손된 경우 (구매
+                    상품의 구성품 일부가 훼손되거나 누락된 경우 포함, 예. 화장품
+                    세트 상품, 기획 상품의 증정품, 사은품 등 누락) 단, 상품 등의
+                    내용을 확인하기 위하여 포장 등을 훼손한 경우에는 구매 철회를
+                    할 수 있습니다
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    3. 회원의 사용 또는 일부 소비에 의하여 상품의 가치가 현저히
+                    감소한 경우(예. 화장품류 밀봉 개봉 시, 기타 사용·분리·훼손에
+                    의해 상품의 가치가 현저히 감소하여 재판매가 불가할 시)
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    4. 시간의 경과에 의하여 재판매가 곤란할 정도로 상품의 가치가
+                    현저히 감소한 경우
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    5. 배송된 상품이 하자 없음을 확인한 후 설치가 완료된 상품의
+                    경우
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    6. 주문에 따라 개별적으로 생산되는 물품 등 회사에게 회복할
+                    수 없는 피해가 예상되는 경우로서 사전에 해당 거래에 대하여
+                    별도로 그 사실을 고지하고 회원의 서면(전자문서를 포함)에
+                    의한 동의를 받은 경우
+                  </Text>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text>
+                    7. 기타 관련법령이 정하는 청약철회 제한 사유에 해당되는 경우
+                  </Text>
+                </Wrapper>
               </Wrapper>
             )}
           </RsWrapper>
