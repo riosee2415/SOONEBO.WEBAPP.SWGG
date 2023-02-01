@@ -62,7 +62,7 @@ const AppFooter = () => {
           <Wrapper width={`auto`} dr={`row`}>
             <Text>두드림교육</Text>
             <Text margin={`0 10px`} fontSize={width < 800 && `12px`}>
-              주소 : 경기도 수원시 영통구 도청로17번길 40, 광교에듀타운 1층
+              주소 : 경기도 용인시 처인구 남사읍 한숲로 84, 601동 1204호
             </Text>
             <Text fontSize={width < 800 && `12px`}>대표 : 이소망</Text>
           </Wrapper>
